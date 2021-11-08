@@ -1,4 +1,5 @@
-import group_utils.DihPair;
+package groups;
+import groups_utils.DihPair;
 
 public class DihedralGroup extends Group<DihPair> {
 

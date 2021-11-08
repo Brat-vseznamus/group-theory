@@ -1,4 +1,5 @@
-import group_utils.Cycle;
+package groups;
+import groups_utils.Cycle;
 
 public class CyclicGroup extends Group<Cycle>{
 

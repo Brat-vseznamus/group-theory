@@ -1,4 +1,4 @@
-package group_utils;
+package groups_utils;
 
 public class Cycle {
     public int c;

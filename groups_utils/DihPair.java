@@ -1,4 +1,4 @@
-package group_utils;
+package groups_utils;
 
 public class DihPair {
     public DihPair(int r, int s) {
