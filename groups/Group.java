@@ -122,6 +122,31 @@ public class Group<T> {
         return null;
     }
 
+    private int getPowerOfElement(T element) {
+        T e = transform.apply(0);
+        int pw = 1;
+        T ac = element;
+        while (!elementEquals(e, ac)) {
+            ac = rule.apply(ac, element);
+            pw++;
+        }
+        return pw;
+    }
+
+    private T getPower(T element, int pow) {
+        assert pow >= 0;
+        T ac = transform.apply(0);
+        while (pow-- > 0) {
+            ac = rule.apply(ac, element);
+        }
+        return ac;
+    }
+
+    private T inverseOf(T element) {
+        return getPower(element, getPowerOfElement(element) - 1);
+    }
+
+
     @Override
     public String toString() {
         return elements.stream()
@@ -132,5 +157,9 @@ public class Group<T> {
 
     public int getSize() {
         return size;
+    }
+
+    private boolean elementEquals(T g1, T g2) {
+        return deTransform.apply(g1).equals(deTransform.apply(g2));
     }
 }
