@@ -8,6 +8,7 @@ import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class Group<T> {
     protected int size;
@@ -119,6 +120,15 @@ public class Group<T> {
             }
             i++;
         }
+        var powers1 = allPowers();
+        var powers2 = group.allPowers();
+        for (Integer pow: powers1.keySet()) {
+            if (powers1.get(pow).size() 
+                != powers2.getOrDefault(pow, Set.of()).size()) {
+                return null;
+            }
+        }
+
         return null;
     }
 
@@ -145,6 +155,15 @@ public class Group<T> {
     private T inverseOf(T element) {
         return getPower(element, getPowerOfElement(element) - 1);
     }
+
+    public Map<Integer, Set<T>> allPowers() {
+        return elements.stream()
+            .map(this.transform)
+            .collect(
+                Collectors.groupingBy(
+                    this::getPowerOfElement, 
+                    Collectors.toSet()));
+    } 
 
 
     @Override
