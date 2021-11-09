@@ -17,7 +17,7 @@ public class Group<T> {
     protected Function<Integer, T> transform;
     protected Function<T, Integer> deTransform;
 
-    private Group(int size, BinaryOperator<T> rule) {
+    protected Group(int size, BinaryOperator<T> rule) {
         this.size = size;
         this.rule = rule;
         this.elements = IntStream
@@ -101,10 +101,7 @@ public class Group<T> {
         int i = 0, j = 0;
         for (int e1 : this.elements) {
             for (int e2 : this.elements) {
-                m1[i][j] = this.deTransform.apply(
-                        this.rule.apply(
-                            this.transform.apply(e1), 
-                            this.transform.apply(e2)));
+                m1[i][j] = integerRule(e1, e2);
                 j++;
             }
             i++;
@@ -112,10 +109,7 @@ public class Group<T> {
         i = j = 0;
         for (int e1 : group.elements) {
             for (int e2 : group.elements) {
-                m1[i][j] = group.deTransform.apply(
-                        group.rule.apply(
-                            group.transform.apply(e1), 
-                            group.transform.apply(e2)));
+                m1[i][j] = integerRule(e1, e2);
                 j++;
             }
             i++;
@@ -132,7 +126,7 @@ public class Group<T> {
         return null;
     }
 
-    private int getPowerOfElement(T element) {
+    protected int getPowerOfElement(T element) {
         T e = transform.apply(0);
         int pw = 1;
         T ac = element;
@@ -143,7 +137,7 @@ public class Group<T> {
         return pw;
     }
 
-    private T getPower(T element, int pow) {
+    protected T getPower(T element, int pow) {
         assert pow >= 0;
         T ac = transform.apply(0);
         while (pow-- > 0) {
@@ -152,7 +146,14 @@ public class Group<T> {
         return ac;
     }
 
-    private T inverseOf(T element) {
+    protected int integerRule(int g1, int g2) {
+        return deTransform.apply(
+            rule.apply(
+                transform.apply(g1), 
+                transform.apply(g2)));
+    }
+
+    protected T inverseOf(T element) {
         return getPower(element, getPowerOfElement(element) - 1);
     }
 
@@ -178,7 +179,7 @@ public class Group<T> {
         return size;
     }
 
-    private boolean elementEquals(T g1, T g2) {
+    protected boolean elementEquals(T g1, T g2) {
         return deTransform.apply(g1).equals(deTransform.apply(g2));
     }
 }

@@ -42,18 +42,21 @@ public class ProductGroup<T, R> extends Group<Product<T, R>> {
                 } else {
                     for (var g1 : leftSubGroups.get(s1)) {
                         for (var g2 : rightSubGroups.get(s2)) {
-                            // TODO: fix
-                            // if (s1 == s2) {
-                            //     List<Integer> subGroupElements = new ArrayList<>();
-                            //     for (int i = 0; i < g1.elements.size(); i++) {
-                            //         subGroupElements.add(deTransform.apply(
-                            //             new Product<>(
-                            //                 left.transform.apply(left.elements.get(i)), 
-                            //                 right.transform.apply(right.elements.get(i)))));
-                            //     }
-                            //     subgroups.putIfAbsent(s1, new HashSet<>());
-                            //     subgroups.get(s1).add(new Group<>(this, subGroupElements));
-                            // }
+                            // TODO: fix isomorphism
+                            if (s1 == s2) {
+                                Map<Integer, Integer> isomorphism = g1.isomorphic(g2);
+                                if (isomorphism != null) {
+                                    List<Integer> subGroupElements = new ArrayList<>();
+                                    for (int g : g1.elements) {
+                                        subGroupElements.add(deTransform.apply(
+                                            new Product<>(
+                                                left.transform.apply(left.elements.get(g)), 
+                                                right.transform.apply(right.elements.get(isomorphism.get(g))))));
+                                    }
+                                    subgroups.putIfAbsent(s1, new HashSet<>());
+                                    subgroups.get(s1).add(new Group<>(this, subGroupElements));
+                                }
+                            }
 
                             List<Integer> subGroupElements = new ArrayList<>();
                             for (int i : g1.elements) {
