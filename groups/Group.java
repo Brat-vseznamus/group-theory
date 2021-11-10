@@ -63,6 +63,7 @@ public class Group<T> {
             }
             if (group.containsAll(multiplies) 
             && multiplies.containsAll(group)) {
+                System.out.println(intels.stream().map(transform).collect(Collectors.toList()));
                 subGroups.add(intels);
             }
         }   

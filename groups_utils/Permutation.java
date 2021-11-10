@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -107,6 +108,48 @@ public class Permutation {
         return new Permutation(elements);
     }
 
+    public static String toCycleNotation(Permutation p) {
+        int n = p.size();
+        boolean[] nums = new boolean[n];
+        for (int i = 0; i < n; i++) {
+            nums[i] = true;
+        }
+        int k = 0;
+        Supplier<Integer> findFirst = new Supplier<Integer>() {
+            int first = 0;
+            @Override
+            public Integer get() {
+                while (!nums[first++]);
+                return first;
+            }  
+        };
+        List<Integer> cycle = new LinkedList<>();
+        String str = "";
+        while (k != n) {
+            int first = findFirst.get();
+            k++;
+            int next = p.sequence.get(first - 1);
+            int curr = first;
+            cycle.add(curr);
+            nums[curr - 1] = false;
+            while (next != first) {
+                cycle.add(next);
+                curr = next;
+                nums[curr - 1] = false;
+                next = p.sequence.get(curr - 1);
+                k++;
+            }
+            if (cycle.size() != 1) {
+                str += "(" + cycle.stream()
+                    .map(i -> Integer.toString(i))
+                    .collect(Collectors.joining(",")) 
+                + ")";
+            }
+            cycle.clear();
+        }
+        return str;
+    }
+
     public static void main(String[] args) {
         List<Permutation> perms = List.of(
             new Permutation(List.of(1, 2, 3, 4)),
@@ -121,6 +164,7 @@ public class Permutation {
             System.out.println("Permutation: " + p);
             System.out.println("Number of p: " + Permutation.toInt(p));
             System.out.println("Perm from p: " + Permutation.fromInt(4, Permutation.toInt(p)));
+            System.out.println("Cyclic anno: " + Permutation.toCycleNotation(p));
             System.out.println("");
         }
     }
