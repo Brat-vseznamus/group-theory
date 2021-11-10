@@ -1,13 +1,10 @@
 package group.elements;
 
-public class Product<T, R> {
-    public T left;
-    public R right;
+import lombok.Data;
 
-    public Product(T left, R right) {
-        this.left = left;
-        this.right = right;
-    }
+public @Data(staticConstructor = "of") class Product<T, R> {
+    private final T left;
+    private final R right;
 
     @Override
     public String toString() {

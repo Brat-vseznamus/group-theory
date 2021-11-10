@@ -1,6 +1,7 @@
 package group;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -58,25 +59,36 @@ public class Group<T> {
                 subGroups.add(intels);
             }
         }
-        return subGroups.stream().map(s -> new Group<T>(this, s))
+        return subGroups.stream()
+                .map(s -> new Group<T>(this, s))
                 .collect(Collectors.groupingBy(Group<T>::getSize, Collectors.toSet()));
     }
 
     public boolean checkNormal() {
-        Set<T> groupElements = elements.stream().map(transform).collect(Collectors.toSet());
+        Set<T> groupElements = elements.stream()
+            .map(transform)
+            .collect(Collectors.toSet());
         return elements.stream().allMatch(index -> {
             T g = transform.apply(index);
-            Set<T> cosetLeft = groupElements.stream().map(s -> rule.apply(s, g)).collect(Collectors.toSet());
-            Set<T> cosetRight = groupElements.stream().map(s -> rule.apply(g, s)).collect(Collectors.toSet());
+            Set<T> cosetLeft = leftCoset(groupElements, g);
+            Set<T> cosetRight = rightCoset(groupElements, g);
             return cosetLeft.equals(cosetRight);
         });
     }
 
+    private Set<T> leftCoset(Collection<T> groupElements, T g) {
+        return groupElements.stream().map(s -> rule.apply(s, g)).collect(Collectors.toSet());
+    }
+
+    private Set<T> rightCoset(Collection<T> groupElements, T g) {
+        return groupElements.stream().map(s -> rule.apply(g, s)).collect(Collectors.toSet());
+    }
+
     // return map if isomorphic and null otherwise
     // TODO
-    public <R> Map<Integer, Integer> isomorphic(Group<R> group) {
+    public <R> Map<Integer, Integer> isomorphism(Group<R> group) {
         if (this.size != group.size) {
-            throw new IllegalArgumentException("comparing groups must have same sizes");
+            return null;
         }
         int n = this.size;
         int[][] m1 = new int[n][n];
@@ -92,7 +104,7 @@ public class Group<T> {
         i = j = 0;
         for (int e1 : group.elements) {
             for (int e2 : group.elements) {
-                m1[i][j] = integerRule(e1, e2);
+                m2[i][j] = integerRule(e1, e2);
                 j++;
             }
             i++;
@@ -137,13 +149,16 @@ public class Group<T> {
     }
 
     public Map<Integer, Set<T>> allPowers() {
-        return elements.stream().map(this.transform)
+        return elements.stream()
+                .map(this.transform)
                 .collect(Collectors.groupingBy(this::getPowerOfElement, Collectors.toSet()));
     }
 
     @Override
     public String toString() {
-        return elements.stream().map(transform).collect(Collectors.toList()).toString();
+        return elements.stream()
+            .map(transform)
+            .collect(Collectors.toList()).toString();
     }
 
     public int getSize() {

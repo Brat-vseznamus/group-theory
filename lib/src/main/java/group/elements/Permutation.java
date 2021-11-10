@@ -4,21 +4,27 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class Permutation {
-    ArrayList<Integer> sequence;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
 
-    public Permutation(ArrayList<Integer> sequence) {
+@EqualsAndHashCode
+public class Permutation {
+    @NonNull
+    @Getter
+    private final ArrayList<Integer> sequence;
+
+    public Permutation(@NonNull ArrayList<Integer> sequence) {
         if (!checkSequence(sequence)) {
             throw new IllegalArgumentException("wrong sequence of elements");
         }
         this.sequence = sequence;
     }
 
-    public Permutation(List<Integer> sequence) {
+    public Permutation(@NonNull List<Integer> sequence) {
         this(new ArrayList<>(sequence));
     }
 
@@ -40,33 +46,6 @@ public class Permutation {
         return Arrays.stream(numbers).allMatch(i -> i == 1);
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(sequence);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Permutation other = (Permutation) obj;
-        if (sequence == null) {
-            if (other.sequence != null)
-                return false;
-        } else if (!sequence.equals(other.sequence))
-            return false;
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return sequence.toString();
-    }
-
     public int size() {
         return sequence.size();
     }
@@ -75,7 +54,7 @@ public class Permutation {
         final List<Integer> order = new LinkedList<>();
         int n = p.size();
         int factorial = IntStream.range(1, n + 1).reduce(1, (e, ac) -> e * ac);
-        IntStream.range(1, n + 1).forEach(i -> order.add(i));
+        IntStream.range(1, n + 1).forEach(order::add);
 
         int number = 0;
         for (int element : p.sequence) {
@@ -90,7 +69,7 @@ public class Permutation {
     public static Permutation fromInt(int n, int number) {
         int factorial = IntStream.range(1, n + 1).reduce(1, (e, ac) -> e * ac);
         final List<Integer> order = new LinkedList<>();
-        IntStream.range(1, n + 1).forEach(i -> order.add(i));
+        IntStream.range(1, n + 1).forEach(order::add);
 
         List<Integer> elements = new ArrayList<>();
         for (int step = 0; step < n; step++) {

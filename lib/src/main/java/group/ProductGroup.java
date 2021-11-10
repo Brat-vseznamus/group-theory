@@ -15,13 +15,15 @@ public class ProductGroup<T, R> extends Group<Product<T, R>> {
 
     public ProductGroup(Group<T> left, Group<R> right) {
         super(left.size * right.size,
-                (g1, g2) -> new Product<>(left.rule.apply(g1.left, g2.left), right.rule.apply(g1.right, g2.right)),
-                n -> new Product<>(left.transform.apply(n / right.size), right.transform.apply(n % right.size)),
-                pr -> right.size * left.deTransform.apply(pr.left) + right.deTransform.apply(pr.right));
+                (g1, g2) -> Product.of(left.rule.apply(g1.getLeft(), g2.getLeft()),
+                        right.rule.apply(g1.getRight(), g2.getRight())),
+                n -> Product.of(left.transform.apply(n / right.size), right.transform.apply(n % right.size)),
+                pr -> right.size * left.deTransform.apply(pr.getLeft()) + right.deTransform.apply(pr.getRight()));
         this.left = left;
         this.right = right;
     }
 
+    // TODO: simplify
     @Override
     public Map<Integer, Set<Group<Product<T, R>>>> allSubGroups() {
         var leftSubGroups = left.allSubGroups();
@@ -43,11 +45,11 @@ public class ProductGroup<T, R> extends Group<Product<T, R>> {
                         for (var g2 : rightSubGroups.get(s2)) {
                             // TODO: fix isomorphism
                             if (s1 == s2) {
-                                Map<Integer, Integer> isomorphism = g1.isomorphic(g2);
+                                Map<Integer, Integer> isomorphism = g1.isomorphism(g2);
                                 if (isomorphism != null) {
                                     List<Integer> subGroupElements = new ArrayList<>();
                                     for (int g : g1.elements) {
-                                        subGroupElements.add(deTransform.apply(new Product<>(
+                                        subGroupElements.add(deTransform.apply(Product.of(
                                                 left.transform.apply(left.elements.get(g)),
                                                 right.transform.apply(right.elements.get(isomorphism.get(g))))));
                                     }
@@ -60,7 +62,7 @@ public class ProductGroup<T, R> extends Group<Product<T, R>> {
                             for (int i : g1.elements) {
                                 for (int j : g2.elements) {
                                     subGroupElements.add(deTransform
-                                            .apply(new Product<>(left.transform.apply(i), right.transform.apply(j))));
+                                            .apply(Product.of(left.transform.apply(i), right.transform.apply(j))));
                                 }
                             }
                             subgroups.putIfAbsent(s1 * s2, new HashSet<>());
