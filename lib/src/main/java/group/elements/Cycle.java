@@ -1,4 +1,4 @@
-package groups_utils;
+package group.elements;
 
 public class Cycle {
     public int c;
@@ -40,7 +40,4 @@ public class Cycle {
         return true;
     }
 
-    
-
-    
 }

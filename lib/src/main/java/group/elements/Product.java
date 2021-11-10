@@ -1,4 +1,4 @@
-package groups_utils;
+package group.elements;
 
 public class Product<T, R> {
     public T left;

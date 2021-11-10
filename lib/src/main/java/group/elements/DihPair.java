@@ -1,4 +1,4 @@
-package groups_utils;
+package group.elements;
 
 public class DihPair {
     public DihPair(int r, int s) {
@@ -55,6 +55,5 @@ public class DihPair {
             return false;
         return true;
     }
-        
-}
 
+}

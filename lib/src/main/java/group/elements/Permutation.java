@@ -1,4 +1,4 @@
-package groups_utils;
+package group.elements;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,12 +26,9 @@ public class Permutation {
         if (size() != other.size()) {
             throw new IllegalArgumentException("permutations must have same sizes");
         }
-        return new Permutation(
-            other.sequence.stream()
-                .map(i -> this.sequence.get(i - 1))
-                .collect(Collectors.toList()));
+        return new Permutation(other.sequence.stream().map(i -> this.sequence.get(i - 1)).collect(Collectors.toList()));
     }
-    
+
     private static boolean checkSequence(ArrayList<Integer> sequence) {
         int n = sequence.size();
         int[] numbers = new int[n];
@@ -85,7 +82,7 @@ public class Permutation {
             int orderOfNumber = order.indexOf(element);
             factorial /= n--;
             number += factorial * orderOfNumber;
-            order.remove((Integer)element);
+            order.remove((Integer) element);
         }
         return number;
     }
@@ -108,16 +105,11 @@ public class Permutation {
     }
 
     public static void main(String[] args) {
-        List<Permutation> perms = List.of(
-            new Permutation(List.of(1, 2, 3, 4)),
-            new Permutation(List.of(1, 2, 4, 3)),
-            new Permutation(List.of(1, 3, 2, 4)),
-            new Permutation(List.of(1, 3, 4, 2)),
-            new Permutation(List.of(2, 1, 3, 4)),
-            new Permutation(List.of(4, 3, 2, 1))
-        );
+        List<Permutation> perms = List.of(new Permutation(List.of(1, 2, 3, 4)), new Permutation(List.of(1, 2, 4, 3)),
+                new Permutation(List.of(1, 3, 2, 4)), new Permutation(List.of(1, 3, 4, 2)),
+                new Permutation(List.of(2, 1, 3, 4)), new Permutation(List.of(4, 3, 2, 1)));
 
-        for (Permutation p: perms) {
+        for (Permutation p : perms) {
             System.out.println("Permutation: " + p);
             System.out.println("Number of p: " + Permutation.toInt(p));
             System.out.println("Perm from p: " + Permutation.fromInt(4, Permutation.toInt(p)));

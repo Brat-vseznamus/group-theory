@@ -1,4 +1,5 @@
-package groups;
+package group;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -8,7 +9,6 @@ import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 public class Group<T> {
     protected int size;
@@ -20,10 +20,7 @@ public class Group<T> {
     protected Group(int size, BinaryOperator<T> rule) {
         this.size = size;
         this.rule = rule;
-        this.elements = IntStream
-                    .range(0, size)
-                    .boxed()
-                    .collect(Collectors.toList());
+        this.elements = IntStream.range(0, size).boxed().collect(Collectors.toList());
     }
 
     public <S extends Group<T>> Group(S originalGroup, List<Integer> subgroup) {
@@ -34,11 +31,7 @@ public class Group<T> {
         this.deTransform = originalGroup.deTransform;
     }
 
-    public Group(int size, 
-        BinaryOperator<T> rule, 
-        Function<Integer, T> transform, 
-        Function<T, Integer> deTransform) {
-        
+    public Group(int size, BinaryOperator<T> rule, Function<Integer, T> transform, Function<T, Integer> deTransform) {
         this(size, rule);
         this.transform = transform;
         this.deTransform = deTransform;
@@ -61,32 +54,22 @@ public class Group<T> {
                     multiplies.add(rule.apply(el1, el2));
                 }
             }
-            if (group.containsAll(multiplies) 
-            && multiplies.containsAll(group)) {
+            if (group.containsAll(multiplies) && multiplies.containsAll(group)) {
                 subGroups.add(intels);
             }
-        }   
-        return subGroups.stream()
-            .map(s -> new Group<T>(this, s))
-            .collect(Collectors.groupingBy(Group<T>::getSize, Collectors.toSet()));
+        }
+        return subGroups.stream().map(s -> new Group<T>(this, s))
+                .collect(Collectors.groupingBy(Group<T>::getSize, Collectors.toSet()));
     }
 
     public boolean checkNormal() {
-        Set<T> groupElements = elements.stream()
-                                .map(transform)
-                                .collect(Collectors.toSet());
-        return elements.stream().allMatch(
-            index -> {
-                T g = transform.apply(index);
-                Set<T> cosetLeft = groupElements.stream()
-                                .map(s -> rule.apply(s, g))
-                                .collect(Collectors.toSet());
-                Set<T> cosetRight = groupElements.stream()
-                                .map(s -> rule.apply(g, s))
-                                .collect(Collectors.toSet());
-                return cosetLeft.equals(cosetRight);
-            }
-        );
+        Set<T> groupElements = elements.stream().map(transform).collect(Collectors.toSet());
+        return elements.stream().allMatch(index -> {
+            T g = transform.apply(index);
+            Set<T> cosetLeft = groupElements.stream().map(s -> rule.apply(s, g)).collect(Collectors.toSet());
+            Set<T> cosetRight = groupElements.stream().map(s -> rule.apply(g, s)).collect(Collectors.toSet());
+            return cosetLeft.equals(cosetRight);
+        });
     }
 
     // return map if isomorphic and null otherwise
@@ -116,9 +99,8 @@ public class Group<T> {
         }
         var powers1 = allPowers();
         var powers2 = group.allPowers();
-        for (Integer pow: powers1.keySet()) {
-            if (powers1.get(pow).size() 
-                != powers2.getOrDefault(pow, Set.of()).size()) {
+        for (Integer pow : powers1.keySet()) {
+            if (powers1.get(pow).size() != powers2.getOrDefault(pow, Set.of()).size()) {
                 return null;
             }
         }
@@ -147,10 +129,7 @@ public class Group<T> {
     }
 
     protected int integerRule(int g1, int g2) {
-        return deTransform.apply(
-            rule.apply(
-                transform.apply(g1), 
-                transform.apply(g2)));
+        return deTransform.apply(rule.apply(transform.apply(g1), transform.apply(g2)));
     }
 
     protected T inverseOf(T element) {
@@ -158,21 +137,13 @@ public class Group<T> {
     }
 
     public Map<Integer, Set<T>> allPowers() {
-        return elements.stream()
-            .map(this.transform)
-            .collect(
-                Collectors.groupingBy(
-                    this::getPowerOfElement, 
-                    Collectors.toSet()));
-    } 
-
+        return elements.stream().map(this.transform)
+                .collect(Collectors.groupingBy(this::getPowerOfElement, Collectors.toSet()));
+    }
 
     @Override
     public String toString() {
-        return elements.stream()
-                .map(transform)
-                .collect(Collectors.toList())
-                .toString();
+        return elements.stream().map(transform).collect(Collectors.toList()).toString();
     }
 
     public int getSize() {
