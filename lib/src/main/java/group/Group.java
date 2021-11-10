@@ -9,6 +9,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import lombok.EqualsAndHashCode;
+
+@EqualsAndHashCode
 public abstract class Group<T> {
 
     abstract T transform(int x);
@@ -39,6 +42,7 @@ public abstract class Group<T> {
                 }
             }
             Set<T> multiplies = new HashSet<>();
+            multiplies.add(neutralElement());
             for (T el1 : group) {
                 for (T el2 : group) {
                     multiplies.add(rule(el1, el2));
@@ -143,6 +147,10 @@ public abstract class Group<T> {
     public Map<Integer, Set<T>> allPowers() {
         return elements.stream().map(this::transform)
                 .collect(Collectors.groupingBy(this::getPowerOfElement, Collectors.toSet()));
+    }
+
+    public T neutralElement() {
+        return transform(0);
     }
 
     @Override
