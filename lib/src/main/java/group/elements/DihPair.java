@@ -19,19 +19,11 @@ public class DihPair {
         }
         String sn = "";
         String rn = "";
-        if (s == 0) {
-            sn = "";
-        } else if (s == 1) {
-            sn = "s";
-        }
 
-        if (r == 0) {
-            rn = "";
-        } else if (r == 1) {
-            rn = "r";
-        } else {
-            rn = "r^{" + r + "}";
-        }
+        sn = s == 0 ? "" : "s";
+        rn = r == 0 ? "" : 
+            r == 1 ? "r" : "r{" + r + "}";
+        
         return rn + sn;
     }
 }

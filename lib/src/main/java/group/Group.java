@@ -53,9 +53,14 @@ public abstract class Group<T> {
                 .collect(Collectors.groupingBy(Group<T>::getSize, Collectors.toSet()));
     }
 
-    public boolean isNormal() {
+    public boolean isNormal(Group<T> originalGroup) {
+        if (!originalGroup.elements.stream()
+            .collect(Collectors.toSet())
+            .contains(elements)) {
+            return false;
+        }
         Set<T> groupElements = elements.stream().map(this::transform).collect(Collectors.toSet());
-        return elements.stream().allMatch(index -> {
+        return originalGroup.elements.stream().allMatch(index -> {
             T g = transform(index);
             Set<T> cosetLeft = leftCoset(groupElements, g);
             Set<T> cosetRight = rightCoset(groupElements, g);

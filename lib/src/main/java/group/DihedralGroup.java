@@ -10,12 +10,12 @@ public class DihedralGroup extends Group<DihPair> {
 
     @Override
     DihPair transform(int n) {
-        return new DihPair(n % getSize(), n / getSize());
+        return new DihPair(n % (getSize() / 2), n / (getSize() / 2));
     }
 
     @Override
     int deTransform(DihPair element) {
-        return element.getS() * getSize() + element.getR();
+        return element.getS() * getSize() / 2 + element.getR();
     }
 
     @Override

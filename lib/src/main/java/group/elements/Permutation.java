@@ -125,18 +125,4 @@ public class Permutation {
         }
         return str;
     }
-
-    public static void main(String[] args) {
-        List<Permutation> perms = List.of(new Permutation(List.of(1, 2, 3, 4)), new Permutation(List.of(1, 2, 4, 3)),
-                new Permutation(List.of(1, 3, 2, 4)), new Permutation(List.of(1, 3, 4, 2)),
-                new Permutation(List.of(2, 1, 3, 4)), new Permutation(List.of(4, 3, 2, 1)));
-
-        for (Permutation p : perms) {
-            System.out.println("Permutation: " + p);
-            System.out.println("Number of p: " + Permutation.toInt(p));
-            System.out.println("Perm from p: " + Permutation.fromInt(4, Permutation.toInt(p)));
-            System.out.println("Cyclic anno: " + Permutation.toCycleNotation(p));
-            System.out.println("");
-        }
-    }
 }

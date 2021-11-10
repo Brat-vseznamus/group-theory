@@ -4,11 +4,41 @@
 package group;
 
 import org.junit.jupiter.api.Test;
+
+import group.elements.Permutation;
+
 import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.List;
 
 class LibraryTest {
     @Test void someLibraryMethodReturnsTrue() {
         Library classUnderTest = new Library();
         assertTrue(classUnderTest.someLibraryMethod(), "someLibraryMethod should return 'true'");
+    }
+
+    @Test void testPermutations() {
+        List<Permutation> perms = List.of(
+                new Permutation(List.of(1, 2, 3, 4)), 
+                new Permutation(List.of(1, 2, 4, 3)),
+                new Permutation(List.of(1, 3, 2, 4)), 
+                new Permutation(List.of(1, 3, 4, 2)),
+                new Permutation(List.of(2, 1, 3, 4)), 
+                new Permutation(List.of(4, 3, 2, 1)));
+        List<Integer> numbersOfPermutations = List.of(
+            0, 1, 2, 3, 6, 23
+        );
+
+        int k = 0;
+        for (Permutation p : perms) {
+            System.out.println("Permutation: " + p);
+            System.out.println("Number of p: " + Permutation.toInt(p));
+            System.out.println("Perm from p: " + Permutation.fromInt(4, Permutation.toInt(p)));
+            System.out.println("Cyclic anno: " + Permutation.toCycleNotation(p));
+            System.out.println("");
+            assertEquals(numbersOfPermutations.get(k++), Permutation.toInt(p));
+            assertEquals(p, Permutation.fromInt(4, Permutation.toInt(p)));
+            
+        }
     }
 }
