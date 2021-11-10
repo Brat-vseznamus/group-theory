@@ -48,7 +48,8 @@ public abstract class Group<T> {
                 subGroups.add(intels);
             }
         }
-        return subGroups.stream().map(s -> new CustomGroup<T>(this, s))
+        return subGroups.stream()
+                .map(this::subgroup)
                 .collect(Collectors.groupingBy(Group<T>::getSize, Collectors.toSet()));
     }
 
@@ -70,6 +71,10 @@ public abstract class Group<T> {
         return groupElements.stream().map(s -> rule(g, s)).collect(Collectors.toSet());
     }
 
+    public Group<T> subgroup(List<Integer> subelements) {
+        return new CustomGroup<>(this, subelements);
+    }
+
     // return map if isomorphic and null otherwise
     // TODO
     public <R> Map<Integer, Integer> isomorphism(Group<R> group) {
@@ -80,6 +85,7 @@ public abstract class Group<T> {
         int[][] m1 = new int[n][n];
         int[][] m2 = new int[n][n];
         int i = 0, j = 0;
+        // TODO: extract this to `cayleyTable` method
         for (int e1 : this.elements) {
             for (int e2 : this.elements) {
                 m1[i][j] = integerRule(e1, e2);
