@@ -63,8 +63,8 @@ public class GroupTest {
     @ArgumentsSource(GroupProvider.class)
     public <T> void trivialSubgroups(Group<T> G) {
         var subgroups = G.allSubGroups();
-        assertEquals(subgroups.get(1), Set.of(G.subgroup(List.of(G.deTransform(G.neutralElement())))));
-        assertEquals(subgroups.get(G.getSize()), Set.of(G));
+        assertEquals(Set.of(G.subgroup(List.of(G.deTransform(G.neutralElement())))), subgroups.get(1));
+        assertEquals(Set.of(G), subgroups.get(G.getSize()));
     }
 
     @ParameterizedTest

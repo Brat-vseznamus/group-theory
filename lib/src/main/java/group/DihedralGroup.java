@@ -20,7 +20,7 @@ public class DihedralGroup extends Group<DihPair> {
 
     @Override
     DihPair rule(DihPair e1, DihPair e2) {
-        return new DihPair((e1.getR() + (e1.getS() == 1 ? -1 : 1) * e2.getR() + getSize()) % getSize(),
+        return new DihPair((e1.getR() + (e1.getS() == 1 ? -1 : 1) * e2.getR() + getSize() / 2) % getSize() / 2,
                 (e1.getS() + e2.getS()) % 2);
     }
 
