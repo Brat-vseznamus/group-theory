@@ -30,4 +30,9 @@ public class SymmetricGroup extends Group<Permutation> {
     public static void main(String[] args) {
         System.out.println(new SymmetricGroup(4));
     }
+
+    @Override
+    public String toString() {
+        return "S[" + order + "]";
+    }
 }

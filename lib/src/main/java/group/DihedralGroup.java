@@ -24,4 +24,9 @@ public class DihedralGroup extends Group<DihPair> {
                 (e1.getS() + e2.getS()) % 2);
     }
 
+    @Override
+    public String toString() {
+        return "Dih[" + getSize() / 2 + "]";
+    }
+
 }

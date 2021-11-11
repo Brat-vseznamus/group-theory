@@ -160,6 +160,10 @@ public abstract class Group<T> {
 
     @Override
     public String toString() {
+        return "G[" + getSize() + "] = " + toElements();
+    }
+
+    public String toElements() {
         return elements.stream().map(this::transform).collect(Collectors.toList()).toString();
     }
 

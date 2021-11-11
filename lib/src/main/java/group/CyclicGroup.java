@@ -53,4 +53,9 @@ public class CyclicGroup extends Group<Cycle> {
                 Collectors.toSet()));
     }
 
+    @Override
+    public String toString() {
+        return "C[" + getSize() + "]";
+    }
+
 }

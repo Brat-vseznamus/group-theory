@@ -87,4 +87,9 @@ public class ProductGroup<T, R> extends Group<Product<T, R>> {
         return Product.of(left.rule(e1.getLeft(), e2.getLeft()), right.rule(e1.getRight(), e2.getRight()));
     }
 
+    @Override
+    public String toString() {
+        return left.toString() + " x " + right.toString();
+    }
+
 }
