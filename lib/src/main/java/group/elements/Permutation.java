@@ -29,11 +29,13 @@ public class Permutation {
         this(new ArrayList<>(sequence));
     }
 
-    public Permutation apply(Permutation other) {
+    public Permutation apply(@NonNull Permutation other) {
         if (size() != other.size()) {
             throw new IllegalArgumentException("permutations must have same sizes");
         }
-        return new Permutation(other.sequence.stream().map(i -> this.sequence.get(i - 1)).collect(Collectors.toList()));
+        return new Permutation(other.sequence.stream()
+                .map(i -> this.sequence.get(i - 1))
+                .collect(Collectors.toList()));
     }
 
     private static boolean checkSequence(ArrayList<Integer> sequence) {
