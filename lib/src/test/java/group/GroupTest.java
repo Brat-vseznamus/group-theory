@@ -16,7 +16,7 @@ import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 
 public class GroupTest {
-    public static class CyclicGroupOfPrimeOrderProvider implements ArgumentsProvider {
+    static class CyclicGroupOfPrimeOrderProvider implements ArgumentsProvider {
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
             // what's efficiency anyway?
@@ -29,7 +29,7 @@ public class GroupTest {
         }
     }
 
-    public static class GroupProvider implements ArgumentsProvider {
+    static class GroupProvider implements ArgumentsProvider {
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
             List<Group<?>> result = new ArrayList<>();
@@ -37,19 +37,23 @@ public class GroupTest {
                 result.add(new CyclicGroup(i));
                 result.add(new DihedralGroup(i));
             }
-            return result.stream().map(Arguments::of);
+            // return result.stream().map(Arguments::of);
+            return IntStream.rangeClosed(1, 10)
+                    .boxed()
+                    .flatMap(i -> List.of(new CyclicGroup(i), new DihedralGroup(i), new SymmetricGroup(i)).stream())
+                    .map(Arguments::of);
         }
     }
     
     @ParameterizedTest
     @ArgumentsSource(GroupProvider.class)
-    public <T> void selfSubgroup(Group<T> G) {
+    <T> void selfSubgroup(Group<T> G) {
         assertEquals(G, G.subgroup(G.elements));
     }
     
     @ParameterizedTest
     @ArgumentsSource(GroupProvider.class)
-    public <T> void neutralElement(Group<T> G) {
+    <T> void neutralElement(Group<T> G) {
         var neutralElements = G.elements.stream()
             .map(G::transform)
             .map(G::getPowerOfElement)
@@ -61,7 +65,7 @@ public class GroupTest {
     
     @ParameterizedTest
     @ArgumentsSource(GroupProvider.class)
-    public <T> void trivialSubgroups(Group<T> G) {
+    <T> void trivialSubgroups(Group<T> G) {
         var subgroups = G.allSubGroups();
         assertEquals(Set.of(G.subgroup(List.of(G.deTransform(G.neutralElement())))), subgroups.get(1));
         assertEquals(Set.of(G), subgroups.get(G.getSize()));
@@ -69,7 +73,7 @@ public class GroupTest {
 
     @ParameterizedTest
     @ArgumentsSource(CyclicGroupOfPrimeOrderProvider.class)
-    public <T> void cyclicGroupOfPrimeOrderHasNoSubgroups(Group<T> G) {
+    <T> void cyclicGroupOfPrimeOrderHasNoSubgroups(Group<T> G) {
         assertEquals(2, G.allSubGroups().size());
     }
 }

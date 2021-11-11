@@ -102,7 +102,7 @@ public class Permutation {
             }  
         };
         List<Integer> cycle = new LinkedList<>();
-        String str = "";
+        String str = ""; // TODO: StringBuilder
         while (k != n) {
             int first = findFirst.get();
             k++;
@@ -126,5 +126,13 @@ public class Permutation {
             cycle.clear();
         }
         return str;
+    }
+    
+    @Override
+    public String toString() {
+        if (this.equals(fromInt(0, size()))) {
+            return "1";
+        }
+        return toCycleNotation(this);
     }
 }

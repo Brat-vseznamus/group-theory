@@ -10,6 +10,7 @@ plugins {
     // Apply the java-library plugin for API and implementation separation.
     `java-library`
     id("io.freefair.lombok") version "6.2.0"
+    jacoco
 }
 
 repositories {
@@ -31,4 +32,12 @@ dependencies {
 tasks.test {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
+    finalizedBy(tasks.jacocoTestReport)
+}
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
+    reports {
+        xml.required.set(true)
+        // html.outputLocation.set(layout.buildDirectory.dir("jacocoHtml"))
+    }
 }
