@@ -69,14 +69,14 @@ public class Permutation {
         return number;
     }
 
-    public static Permutation fromInt(int n, int number) {
-        int factorial = IntStream.range(1, n + 1).reduce(1, (e, ac) -> e * ac);
+    public static Permutation fromInt(int size, int number) {
+        int factorial = IntStream.range(1, size + 1).reduce(1, (e, ac) -> e * ac);
         final List<Integer> order = new LinkedList<>();
-        IntStream.range(1, n + 1).forEach(order::add);
+        IntStream.range(1, size + 1).forEach(order::add);
 
         List<Integer> elements = new ArrayList<>();
-        for (int step = 0; step < n; step++) {
-            factorial /= (n - step);
+        for (int step = 0; step < size; step++) {
+            factorial /= (size - step);
             int numOrder = number / factorial;
             number = number % factorial;
             Integer el = order.get(numOrder);
@@ -130,7 +130,7 @@ public class Permutation {
     
     @Override
     public String toString() {
-        if (this.equals(fromInt(0, size()))) {
+        if (this.equals(fromInt(size(), 0))) {
             return "1";
         }
         return toCycleNotation(this);

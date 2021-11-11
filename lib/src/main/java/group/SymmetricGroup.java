@@ -7,14 +7,14 @@ import group.elements.Permutation;
 public class SymmetricGroup extends Group<Permutation> {
     private int order;
 
-    protected SymmetricGroup(int size) {
+    public SymmetricGroup(int size) {
         super(IntStream.range(1, size + 1).reduce(1, (e, ac) -> e * ac));
         order = size;
     }
 
     @Override
     Permutation transform(int x) {
-        return Permutation.fromInt(x, order);
+        return Permutation.fromInt(order, x);
     }
 
     @Override
@@ -27,4 +27,7 @@ public class SymmetricGroup extends Group<Permutation> {
         return e1.apply(e2);
     }
     
+    public static void main(String[] args) {
+        System.out.println(new SymmetricGroup(4));
+    }
 }
