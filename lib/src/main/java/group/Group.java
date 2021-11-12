@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import lombok.EqualsAndHashCode;
+import utils.NumericalUtils;
 
 @EqualsAndHashCode
 public abstract class Group<T> {
@@ -32,7 +33,11 @@ public abstract class Group<T> {
 
     public Map<Integer, Set<Group<T>>> allSubGroups() {
         Set<List<Integer>> subGroups = new HashSet<>();
+        Set<Integer> allDividors = NumericalUtils.allDivisors(getSize());
         for (int mask = 1; mask < 1 << getSize(); mask++) {
+            if (!allDividors.contains(Integer.bitCount(mask))) {
+                continue;
+            }
             Set<T> group = new HashSet<>();
             List<Integer> intels = new ArrayList<>();
             for (int el = 0; el < getSize(); el++) {

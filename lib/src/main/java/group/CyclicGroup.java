@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import group.elements.Cycle;
+import utils.NumericalUtils;
 
 public class CyclicGroup extends Group<Cycle> {
 
@@ -32,16 +33,7 @@ public class CyclicGroup extends Group<Cycle> {
     @Override
     public Map<Integer, Set<Group<Cycle>>> allSubGroups() {
         int n = getSize();
-        Set<Integer> halfOfDivisors = IntStream
-            .range(1, (int)Math.floor(Math.sqrt(n)) + 1)
-            .filter(i -> n % i == 0)
-            .boxed()
-            .collect(Collectors.toSet());
-        Set<Integer> divisors = new HashSet<>();
-        for (int d : halfOfDivisors) {
-            divisors.add(d);
-            divisors.add(n / d);
-        }
+        Set<Integer> divisors = NumericalUtils.allDivisors(n);
         return divisors.stream()
             .map(d -> 
                 subgroup(IntStream.range(0, d)
@@ -57,5 +49,4 @@ public class CyclicGroup extends Group<Cycle> {
     public String toString() {
         return "C[" + getSize() + "]";
     }
-
 }
