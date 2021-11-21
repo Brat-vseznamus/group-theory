@@ -58,13 +58,13 @@ public class GroupTest {
                 .map(Arguments::of);
     }
     
-    @ParameterizedTest
+    @ParameterizedTest(name="{argumentsWithNames}")
     @ArgumentsSource(GroupProvider.class)
     <T> void selfSubgroup(Group<T> G) {
         assertEquals(G, G.subgroup(G.elements));
     }
     
-    @ParameterizedTest
+    @ParameterizedTest(name="{argumentsWithNames}")
     @ArgumentsSource(GroupProvider.class)
     <T> void neutralElement(Group<T> G) {
         var neutralElements = G.elements.stream()
@@ -76,7 +76,7 @@ public class GroupTest {
         assertEquals("1", G.neutralElement().toString());
     }
     
-    @ParameterizedTest
+    @ParameterizedTest(name="{argumentsWithNames}")
     @MethodSource("smallGroupArguments")
     <T> void trivialSubgroupsForSmallGroups(Group<T> G) {
         var subgroups = G.allSubGroups();
@@ -84,7 +84,7 @@ public class GroupTest {
         assertEquals(Set.of(G), subgroups.get(G.getSize()));
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name="{argumentsWithNames}")
     @ArgumentsSource(CyclicGroupOfPrimeOrderProvider.class)
     <T> void cyclicGroupOfPrimeOrderHasNoSubgroups(Group<T> G) {
         assertEquals(2, G.allSubGroups().size());

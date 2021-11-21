@@ -26,7 +26,7 @@ public class GroupIsomorphismTest {
         return groupArgumentsGenerator(10, CyclicGroup::new);
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name="{argumentsWithNames}")
     @MethodSource("cyclicGroups")
     void isomorphismCyclic(CyclicGroup g) {
         int n = g.getSize();
@@ -37,7 +37,7 @@ public class GroupIsomorphismTest {
         return groupArgumentsGenerator(5, DihedralGroup::new);
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name="{argumentsWithNames}")
     @MethodSource("dihedralGroups")
     void isomorphismDihedral(DihedralGroup g) {
         int n = g.getSize();
