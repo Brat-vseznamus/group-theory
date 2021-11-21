@@ -14,6 +14,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
+import org.junit.jupiter.params.provider.MethodSource;
 
 public class GroupTest {
     static class CyclicGroupOfPrimeOrderProvider implements ArgumentsProvider {
@@ -44,6 +45,18 @@ public class GroupTest {
                     .map(Arguments::of);
         }
     }
+
+    private static Stream<? extends Arguments> smallGroupArguments() {
+        return IntStream.rangeClosed(1, 10)
+                .boxed()
+                .flatMap(i -> List.of(
+                    new CyclicGroup(i), 
+                    new DihedralGroup(i), 
+                    new SymmetricGroup(i)).stream()
+                )
+                .filter(g -> g.getSize() <= 31)
+                .map(Arguments::of);
+    }
     
     @ParameterizedTest
     @ArgumentsSource(GroupProvider.class)
@@ -64,8 +77,8 @@ public class GroupTest {
     }
     
     @ParameterizedTest
-    @ArgumentsSource(GroupProvider.class)
-    <T> void trivialSubgroups(Group<T> G) {
+    @MethodSource("smallGroupArguments")
+    <T> void trivialSubgroupsForSmallGroups(Group<T> G) {
         var subgroups = G.allSubGroups();
         assertEquals(Set.of(G.subgroup(List.of(G.deTransform(G.neutralElement())))), subgroups.get(1));
         assertEquals(Set.of(G), subgroups.get(G.getSize()));

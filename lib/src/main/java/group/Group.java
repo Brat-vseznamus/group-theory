@@ -36,27 +36,32 @@ public abstract class Group<T> {
     public Map<Integer, Set<Group<T>>> allSubGroups() {
         Set<List<Integer>> subGroups = new HashSet<>();
         Set<Integer> allDividors = NumericalUtils.allDivisors(getSize());
+        List<List<Integer>> table = cayleyTable();
+        
         for (int mask = 1; mask < 1 << getSize(); mask++) {
-            if (!allDividors.contains(Integer.bitCount(mask))) {
+            if (!allDividors.contains(Integer.bitCount(mask))
+                || mask % 2 == 0) {
                 continue;
             }
-            Set<T> group = new HashSet<>();
-            List<Integer> intels = new ArrayList<>();
+
+            Set<Integer> group = new HashSet<>();
+            List<Integer> intEls = new ArrayList<>();
             for (int el = 0; el < getSize(); el++) {
                 if ((1 << el & mask) == 1 << el) {
-                    group.add(transform(elements.get(el)));
-                    intels.add(elements.get(el));
+                    group.add(el);
+                    intEls.add(elements.get(el));
                 }
             }
-            Set<T> multiplies = new HashSet<>();
-            multiplies.add(neutralElement());
-            for (T el1 : group) {
-                for (T el2 : group) {
-                    multiplies.add(rule(el1, el2));
+
+            Set<Integer> multiplies = new HashSet<>();
+
+            for (int el1 : intEls) {
+                for (int el2 : intEls) {
+                    multiplies.add(table.get(el1).get(el2));
                 }
             }
-            if (group.containsAll(multiplies) && multiplies.containsAll(group)) {
-                subGroups.add(intels);
+            if (group.equals(multiplies)) {
+                subGroups.add(intEls);
             }
         }
         return subGroups.stream()
