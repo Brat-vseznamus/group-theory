@@ -2,6 +2,7 @@ package group;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import group.elements.Permutation;
 import lombok.EqualsAndHashCode;
 import utils.NumericalUtils;
 
@@ -90,39 +92,49 @@ public abstract class Group<T> {
     }
 
     // return map if isomorphic and null otherwise
-    // TODO
     public <R> Map<Integer, Integer> isomorphism(Group<R> group) {
         if (this.getSize() != group.getSize()) {
             return null;
         }
         int n = this.getSize();
-        int[][] m1 = new int[n][n];
-        int[][] m2 = new int[n][n];
-        int i = 0, j = 0;
-        // TODO: extract this to `cayleyTable` method
-        for (int e1 : this.elements) {
-            for (int e2 : this.elements) {
-                m1[i][j] = integerRule(e1, e2);
-                j++;
-            }
-            i++;
-        }
-        i = j = 0;
-        for (int e1 : group.elements) {
-            for (int e2 : group.elements) {
-                m2[i][j] = integerRule(e1, e2);
-                j++;
-            }
-            i++;
-        }
+        List<List<Integer>> m1 = cayleyTable();
+        List<List<Integer>> m2 = group.cayleyTable();
+
         var powers1 = allPowers();
         var powers2 = group.allPowers();
+
         for (Integer pow : powers1.keySet()) {
-            if (powers1.get(pow).size() != powers2.getOrDefault(pow, Set.of()).size()) {
+            if (powers1.get(pow).size() 
+            != powers2.getOrDefault(pow, Set.of()).size()) {
                 return null;
             }
         }
 
+        return defaultIsomorphism(group, m1, m2);
+    }
+
+    private <R> Map<Integer, Integer> defaultIsomorphism(
+        Group<R> group, 
+        List<List<Integer>> m1, 
+        List<List<Integer>> m2) {
+        int n = m1.size();
+        int nf = IntStream.range(1, n + 1).reduce(1, (c, ac) -> ac * c);
+        for (int permutation = 0; permutation < nf; permutation++) {
+            Permutation perm = Permutation.fromInt(n, permutation);
+            List<Integer> iso = 
+                perm.getSequence().stream()
+                .map(i -> i - 1)
+                .collect(Collectors.toList());
+            if (IntStream.range(0, n).allMatch(
+                i -> IntStream.range(0, n).allMatch(
+                    j -> iso.get(m1.get(i).get(j)).equals(m2.get(iso.get(i)).get(iso.get(j)))
+                )
+            )) {
+                HashMap<Integer, Integer> map = new HashMap<>();
+                IntStream.range(0, n).forEach(i -> map.put(i, iso.get(i)));
+                return map;
+            }
+        }
         return null;
     }
 
@@ -178,5 +190,18 @@ public abstract class Group<T> {
 
     protected boolean elementEquals(T g1, T g2) {
         return deTransform(g1) == deTransform(g2);
+    }
+
+    public List<List<Integer>> cayleyTable() {
+        List<T> transformedElements = 
+            elements.stream()
+            .map(this::transform)
+            .collect(Collectors.toList());
+        return transformedElements.stream()
+                .map(fst -> transformedElements.stream()
+                            .map(snd -> this.rule(fst, snd))
+                            .map(el -> this.deTransform(el))
+                            .collect(Collectors.toList()))
+                .collect(Collectors.toList());
     }
 }
