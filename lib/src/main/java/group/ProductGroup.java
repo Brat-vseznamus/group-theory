@@ -27,27 +27,27 @@ public class ProductGroup<T, R> extends Group<Product<T, R>> {
 
         Map<Integer, Set<Group<Product<T, R>>>> subgroups = new HashMap<>();
 
-        System.out.println(leftSubGroups);
-        System.out.println(rightSubGroups);
+        // System.out.println(leftSubGroups);
+        // System.out.println(rightSubGroups);
 
         for (int s1 : leftSubGroups.keySet()) {
             for (int s2 : rightSubGroups.keySet()) {
-                System.out.println(s1 + " , " + s2);
+                // System.out.println(s1 + " , " + s2);
                 if (s1 * s2 == 1) {
                     subgroups.putIfAbsent(1, new HashSet<>());
                     subgroups.get(1).add(subgroup(List.of(0)));
                 } else {
                     for (var g1 : leftSubGroups.get(s1)) {
                         for (var g2 : rightSubGroups.get(s2)) {
-                            // TODO: fix isomorphism
                             if (s1 == s2) {
                                 Map<Integer, Integer> isomorphism = g1.isomorphism(g2);
                                 if (isomorphism != null) {
                                     List<Integer> subGroupElements = new ArrayList<>();
                                     for (int g : g1.elements) {
                                         subGroupElements
-                                                .add(deTransform(Product.of(left.transform(left.elements.get(g)),
-                                                        right.transform(right.elements.get(isomorphism.get(g))))));
+                                                .add(deTransform(Product.of(
+                                                    left.transform(left.elements.get(g)),
+                                                    right.transform(right.elements.get(isomorphism.get(g))))));
                                     }
                                     subgroups.putIfAbsent(s1, new HashSet<>());
                                     subgroups.get(s1).add(subgroup(subGroupElements));

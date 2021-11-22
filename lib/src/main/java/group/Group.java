@@ -124,23 +124,45 @@ public abstract class Group<T> {
         List<List<Integer>> m2) {
         int n = m1.size();
         int nf = IntStream.range(1, n + 1).reduce(1, (c, ac) -> ac * c);
+
+        var sigma1 = indexesReverse();
+        var sigma2 = group.indexesReverse();
+
         for (int permutation = 0; permutation < nf; permutation++) {
             Permutation perm = Permutation.fromInt(n, permutation);
             List<Integer> iso = 
                 perm.getSequence().stream()
                 .map(i -> i - 1)
                 .collect(Collectors.toList());
+            
             if (IntStream.range(0, n).allMatch(
                 i -> IntStream.range(0, n).allMatch(
-                    j -> iso.get(m1.get(i).get(j)).equals(m2.get(iso.get(i)).get(iso.get(j)))
-                )
+                    j -> {
+                    var mult1 = m1.get(i).get(j);
+                    var multIndex1 = sigma1.get(mult1);
+
+                    var mult2 = m2.get(iso.get(i)).get(iso.get(j));
+                    var multIndex2 = sigma2.get(mult2);
+
+                    return multIndex2.equals(iso.get(multIndex1));
+                })
             )) {
                 HashMap<Integer, Integer> map = new HashMap<>();
-                IntStream.range(0, n).forEach(i -> map.put(i, iso.get(i)));
+                IntStream.range(0, n).forEach(
+                    i -> map.put(
+                        elements.get(i), 
+                        group.elements.get(iso.get(i))));
                 return map;
             }
         }
         return null;
+    }
+
+    private Map<Integer, Integer> indexesReverse() {
+        Map<Integer, Integer> map = new HashMap<>();
+        IntStream.range(0, elements.size())
+                    .forEach(i -> map.put(elements.get(i), i));
+        return map; 
     }
 
     protected int getPowerOfElement(T element) {

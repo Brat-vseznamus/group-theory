@@ -22,7 +22,7 @@ public class DihPair {
 
         sn = s == 0 ? "" : "s";
         rn = r == 0 ? "" : 
-            r == 1 ? "r" : "r{" + r + "}";
+            r == 1 ? "r" : "r^{" + r + "}";
         
         return rn + sn;
     }

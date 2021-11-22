@@ -66,3 +66,6 @@ gradle-app.setting
 .project
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
+
+# For main
+lib/src/main/java/Main.java
