@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -230,5 +232,41 @@ public abstract class Group<T> {
                             .map(el -> this.deTransform(el))
                             .collect(Collectors.toList()))
                 .collect(Collectors.toList());
+    }
+
+    public Group<T> center() {
+        var table = cayleyTable();
+        List<Integer> cntr = new LinkedList<>();
+        var sigma = indexesReverse();
+        for (int elNumber : elements) {
+            int elIndex = sigma.get(elNumber);
+            if (IntStream.range(0, getSize())
+                .allMatch(i -> 
+                    table.get(i).get(elIndex) == 
+                    table.get(elIndex).get(i))) {
+                cntr.add(elNumber);
+            }
+        }
+        return subgroup(cntr);
+    }
+
+    public boolean isAbelean() {
+        return this.equals(center());
+    }
+
+    public Group<T> normalizer(Group<T> subGroup) {
+        List<Integer> nrmlzr = new LinkedList<>();
+        Set<T> elementsOfSubGroup = subGroup.elements.stream()
+                                        .map(this::transform)
+                                        .collect(Collectors.toSet());
+        for (int el : elements) {
+            T transformed = transform(el);
+            var leftCoset = leftCoset(elementsOfSubGroup, transformed);
+            var rightCoset = rightCoset(elementsOfSubGroup, transformed);
+            if (leftCoset.equals(rightCoset)) {
+                nrmlzr.add(el);
+            }
+        }
+        return subgroup(nrmlzr);
     }
 }
